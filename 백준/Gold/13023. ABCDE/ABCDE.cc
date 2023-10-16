@@ -11,6 +11,8 @@ using namespace std;
 
 struct Point {
 	int i, j;
+	int cnt = 0;
+	
 };
 
 void Prints(vector<vector<int>>maps, int n, int m) {
@@ -111,86 +113,86 @@ bool findstart(vector<vector<int>>maps, vector<vector<int>>anw, int n, int m, in
 	return bCheck;
 
 }
-
-struct Data {
-	int index;
-	char color = 'G';
-
-};
-struct GDatas {
-	int change;
-	int index;
-
-	string times;
-
-};
-vector<vector<int>>gmaps;
-vector<bool>gBvisited;
-vector<int>save;
-int n, m;
-bool bCheck = false;
-void dfs(int k,int cnt) {
-	//cout << k << "," << cnt << endl;
-	if (cnt == 4) {
-		bCheck = true;
-		//cout << cnt;
-		return;
-	}/**/
-	
-	
-	
-	for (int i = 0; i < gmaps[k].size(); i++) {
-		//cout << gmaps[k][i] << ",";
-		if (gBvisited[ gmaps[k][i] ] == false) {
-			gBvisited[ gmaps[k][i] ] = true;
-			save.push_back(i);
-			
-			dfs(gmaps[k][i],cnt+1);
-			save.pop_back();
-			
-			gBvisited[gmaps[k][i]] = false;
+bool checkmaps(vector<vector<bool>>maps, int n, int m) {
+	//bool bCheck = false;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			if (maps[i][j] == false) {
+				//bCheck = true;
+				return true;
+			}
 		}
 	}
+	return false;
+}
+struct Data {
+	int pos;
+	int sec;
+};
+vector < vector<int>>glists;
+vector<bool>gbCheck;
+bool bCircle = false;
+void dfs(int k,int cnt) {
+	//gbCheck[k] = true;
+	//cout << k << ","<<cnt<<endl;
 	
+
+	if (cnt == 5) {
+		bCircle = true;
+		return;
+	}
+	
+	for (int i = 0; i < glists[k].size(); i++) {
+		if (gbCheck[glists[k][i]]== false) {
+			
+			gbCheck[glists[k][i]] = true;
+			dfs(glists[k][i],cnt+1);
+			gbCheck[glists[k][i]] = false;
+		}
+		
+	}
+
 }
 
 int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(NULL);
 	cout.tie(NULL);
-	
-	//a->b 친구
-	//b->c 친구
-	//c->d 친구
-	//d->e 친구
-	
+	//a와b 친구다
+	//b와 c친구다
+	//c와 d친구다
+	//d는 e친구다
+	int n,m;
 	cin >> n >> m;
-	vector<vector<int>>maps(n);
-	vector<bool>visited(n, false);
-	gBvisited = visited;
+	vector < vector<int>>lists(n);
+	vector<bool>bCheck(n,false);
+	
 	for (int i = 0; i < m; i++) {
-		int s, e;
-		cin >> s >> e;
-		maps[s].push_back(e);
-		maps[e].push_back(s);
+		int a,b;
+		cin >> a>>b;
+		lists[a].push_back(b);
+		lists[b].push_back(a);
 	}
-	gmaps = maps;
-	//Prints(maps, n, m);
+	glists = lists;
+	//cout << endl;
 	for (int i = 0; i < n; i++) {
-		gBvisited[i] = true;
-		dfs(i, 0);
-		gBvisited[i] =false;
-
-		if (bCheck == true) {
-			cout << 1;
-			i = n + 1;
+		gbCheck = bCheck;
+		gbCheck[i] = true;
+		dfs(i, 1);
+		//cout << endl;
+		if (bCircle==true) {
+			break;
 		}
-
 	}
-	if (bCheck == false) {
+	
+	//cout << endl;
+	
+
+	if (bCircle == false) {
 		cout << 0;
 	}
-	
-	//gBvisited[gmaps[k][i]] = true;
-	
+	else {
+		cout << 1;
+	}
+	return 0;
 }
